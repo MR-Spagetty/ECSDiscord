@@ -146,7 +146,7 @@ public class VerificationService : IHostedService
         }
     }
 
-    public async Task<VerificationResult> FinishVerificationAsync(string token, SocketUser user)
+    public async Task<VerificationResult> FinishVerificationAsync(string token, IUser user)
     {
         try
         {
@@ -160,7 +160,7 @@ public class VerificationService : IHostedService
 
                 if (DateTime.Now - pendingVerification.CreationTime > TokenExpiryTime)
                 {
-                    Log.Information("User verification success for {Username} {Id}", user.Username, user.Id);
+                    Log.Information("Verification Token expired for {Username} {Id}", user.Username, user.Id);
                     return VerificationResult.TokenExpired;
                 }
 
@@ -284,7 +284,7 @@ public class VerificationService : IHostedService
         }
     }
 
-    public async Task<bool> ApplyUserVerificationAsync(SocketUser user, bool allowUnverification = true)
+    public async Task<bool> ApplyUserVerificationAsync(IUser user, bool allowUnverification = true)
     {
         Log.Debug("Checking user {User} verificaton status", user.Id);
 
@@ -381,7 +381,7 @@ public class VerificationService : IHostedService
         Log.Information("Mass verification check finished");
     }
 
-    public async Task AddUserVerificationOverride(SocketUser user)
+    public async Task AddUserVerificationOverride(IUser user)
     {
         var guild = _discord.DiscordClient.GetGuild(_discord.GuildId);
         if (guild.GetUser(user.Id) == null)
@@ -407,7 +407,7 @@ public class VerificationService : IHostedService
         await ApplyRoleVerificationAsync(role);
     }
 
-    public async Task<bool> RemoveUserVerificationOverrideAsync(SocketUser user)
+    public async Task<bool> RemoveUserVerificationOverrideAsync(IUser user)
     {
         if (await _storageService.Verification.DeleteVerificationOverrideAsync(user.Id))
         {
