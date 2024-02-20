@@ -14,7 +14,7 @@ public class CodeCommand : ISlashCommand
         _verificationService = verificationService ?? throw new ArgumentNullException(nameof(verificationService));
     }
 
-    public string Name => "verify";
+    public string Name => "code";
 
     public SlashCommandProperties Build()
     {
